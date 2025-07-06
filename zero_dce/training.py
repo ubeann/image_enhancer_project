@@ -69,18 +69,18 @@ def main():
     else:
         logger.info("✅ Dataset found locally.")
 
-    # # Load the dataset
-    # train_dataset, val_dataset = get_dataset(LOL_DATASET_DIR)
+    # Load the dataset
+    train_dataset, val_dataset = get_dataset(LOL_DATASET_DIR)
 
-    # # Log dataset information
-    # logger.info("📊 Training dataset size: %d", len(train_dataset))
-    # logger.info("📊 Validation dataset size: %d", len(val_dataset))
+    # Log dataset information
+    logger.info("📊 Training dataset size: %d", len(train_dataset))
+    logger.info("📊 Validation dataset size: %d", len(val_dataset))
 
-    # # Initialize and compile the Zero-DCE model
-    # logger.info("🔧 Initializing Zero-DCE model...")
-    # model = ZeroDCE()
-    # model.compile(learning_rate=1e-4)
-    # logger.info("✅ Model initialized and compiled.")
+    # Initialize and compile the Zero-DCE model
+    logger.info("🔧 Initializing Zero-DCE model...")
+    model = ZeroDCE()
+    model.compile(learning_rate=1e-4)
+    logger.info("✅ Model initialized and compiled.")
 
     # # Train the model
     # logger.info("🚀 Starting training...")
