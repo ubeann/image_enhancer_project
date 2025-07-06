@@ -5,9 +5,11 @@ from datetime import datetime
 def setup_logger(name: str = "image_enhancer", log_dir: str = "logs") -> logging.Logger:
     """
         Set up a logger for the image enhancer application.
+
         Args:
             name (str): Name of the logger.
             log_dir (str): Directory where log files will be stored.
+
         Returns:
             logging.Logger: Configured logger instance.
     """
