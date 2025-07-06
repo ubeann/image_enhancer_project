@@ -25,7 +25,7 @@ def setup_logger(name: str = "image_enhancer", log_dir: str = "logs") -> logging
 
     # Create handlers
     formatter = logging.Formatter(
-        fmt="%(asctime)s - [%(levelname)s] - %(name)s - %(message)s",
+        fmt="%(asctime)s - [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
