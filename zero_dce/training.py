@@ -82,16 +82,16 @@ def main():
     model.compile(learning_rate=1e-4)
     logger.info("✅ Model initialized and compiled.")
 
-    # # Train the model
-    # logger.info("🚀 Starting training...")
-    # model.fit(train_dataset, validation_data=val_dataset, epochs=50)
-    # logger.info("✅ Training complete.")
+    # Train the model
+    logger.info("🚀 Starting training...")
+    model.fit(train_dataset, validation_data=val_dataset, epochs=50)
+    logger.info("✅ Training complete.")
 
-    # # Save the model weights
-    # logger.info("💾 Saving model weights...")
-    # os.makedirs("models", exist_ok=True)
-    # model.dce_model.save_weights("models/zero_dce_weights.h5")
-    # logger.info("✅ Model weights saved to models/zero_dce_weights.h5")
+    # Save the model weights
+    logger.info("💾 Saving model weights...")
+    os.makedirs("models", exist_ok=True)
+    model.dce_model.save_weights("models/zero_dce_weights.h5")
+    logger.info("✅ Model weights saved to models/zero_dce_weights.h5")
 
 if __name__ == "__main__":
     main()
