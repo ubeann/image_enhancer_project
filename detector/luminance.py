@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import logging
 from typing import Union, List, Dict
+from utils import extract_number
 
 def is_low_light(image_path: str, threshold: float = 70.0, logger: logging.Logger = None) -> Dict:
     """Detect if an image is in low light based on luminance."""
@@ -23,7 +24,7 @@ def is_low_light(image_path: str, threshold: float = 70.0, logger: logging.Logge
     status = "Low Light" if mean_luminance < threshold else "Normal Light"
 
     if logger:
-        logger.info(f"{os.path.basename(image_path)} - Luminance: {mean_luminance:.2f} - {status}")
+        logger.info(f"{os.path.basename(image_path)} - Luminance: {mean_luminance:6.2f} - {status}")
 
     return {
         "filename": os.path.basename(image_path),
@@ -52,7 +53,8 @@ def detect_images(input_path: Union[str, List[str]], output_dir: str, threshold:
         elif os.path.isdir(input_path):
             for root, dirs, files in os.walk(input_path):
                 dirs[:] = [d for d in dirs if d.lower() != output_dir.lower()]  # Exclude output directory
-                for file in files:
+                sorted_files = sorted([f for f in files if f.lower().endswith(('.jpg', '.jpeg', '.png'))], key=extract_number)
+                for file in sorted_files:
                     if file.lower().endswith(('.jpg', '.jpeg', '.png')):
                         full_path = os.path.join(root, file)
                         results.append(is_low_light(full_path, threshold, logger))
