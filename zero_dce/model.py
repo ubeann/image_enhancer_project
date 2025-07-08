@@ -3,6 +3,22 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from typing import Dict
 
+# === Utils === #
+def load_model(weight_path: str) -> tf.keras.Model:
+    """
+    Loads the ZeroDCE model and applies pretrained weights.
+
+    Args:
+        weight_path (str): Path to the .h5 weights file.
+
+    Returns:
+        tf.keras.Model: The loaded and compiled ZeroDCE model.
+    """
+    model = ZeroDCE()
+    model.compile(learning_rate=0.0001)
+    model.load_weights(weight_path)
+    return model
+
 # === DCE Network === #
 def build_dce_net() -> keras.Model:
     """
@@ -235,7 +251,7 @@ class ZeroDCE(keras.Model):
         """
         self.dce_model.save_weights(filepath, overwrite=overwrite, save_format=save_format, options=options)
 
-    def load_weights(self, filepath, by_name=False, skip_mismatch=False, options=None):
+    def load_weights(self, filepath):
         """
         Loads the weights of the ZeroDCE model from a file.
         Args:
@@ -244,4 +260,4 @@ class ZeroDCE(keras.Model):
             skip_mismatch (bool): Whether to skip loading weights that do not match the model.
             options: Additional options for loading.
         """
-        self.dce_model.load_weights(filepath=filepath, by_name=by_name, skip_mismatch=skip_mismatch, options=options)
+        self.dce_model.load_weights(filepath=filepath)

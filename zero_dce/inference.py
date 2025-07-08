@@ -1,10 +1,10 @@
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-from .model import load_zero_dce_weights
+from .model import load_model
 
 # Load the pretrained Zero-DCE model once at module load time
-zero_dce_model = load_zero_dce_weights("zero_dce/weights/zero_dce.h5")
+zero_dce_model = load_model("models/zero_dce.weights.h5")
 
 # Function to apply enhancement using the learned curve parameters
 def get_enhanced_image(data: tf.Tensor, output: tf.Tensor) -> tf.Tensor:
