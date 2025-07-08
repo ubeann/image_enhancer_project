@@ -95,9 +95,9 @@ def main():
             # When status is "Low Light", enhance the image
             if status == "Low Light":
                 try:
-                    enhance_image(input_file, save_path=output_file)
+                    _, mse, psnr = enhance_image(input_file, save_path=output_file)
                     enhanced += 1
-                    logger.info(f"💡 Enhanced: {filename} (Low Light)")
+                    logger.info(f"💡 Enhanced: {filename} (Low Light) | MSE: {mse:.2f}, PSNR: {psnr:.2f} dB")
                 except Exception as ee:
                     logger.warning(f"⚠️ Failed to enhance {filename}: {ee}")
             else:
