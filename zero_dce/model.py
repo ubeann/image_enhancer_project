@@ -169,11 +169,30 @@ class ZeroDCE(keras.Model):
         Returns:
             tf.Tensor: Enhanced image tensor of shape (batch_size, height, width, 3).
         """
-        r = [output[..., i*3:(i+1)*3] for i in range(8)]
-        x = data
-        for ri in r:
-            x = x + ri * (tf.square(x) - x)
-        return x
+        # Decompose the output tensor into 8 sets of parameters
+        r1 = output[:, :, :, :3]
+        r2 = output[:, :, :, 3:6]
+        r3 = output[:, :, :, 6:9]
+        r4 = output[:, :, :, 9:12]
+        r5 = output[:, :, :, 12:15]
+        r6 = output[:, :, :, 15:18]
+        r7 = output[:, :, :, 18:21]
+        r8 = output[:, :, :, 21:24]
+
+        # Apply the Zero-DCE enhancement formula
+        x = data + r1 * (tf.square(data) - data)
+        x = x + r2 * (tf.square(x) - x)
+        x = x + r3 * (tf.square(x) - x)
+        enhanced_image = x + r4 * (tf.square(x) - x)
+
+        # Continue applying the enhancement formula with additional parameters
+        x = enhanced_image + r5 * (tf.square(enhanced_image) - enhanced_image)
+        x = x + r6 * (tf.square(x) - x)
+        x = x + r7 * (tf.square(x) - x)
+        enhanced_image = x + r8 * (tf.square(x) - x)
+
+        # Return the enhanced image
+        return enhanced_image
 
     def compute_losses(self, data: tf.Tensor, output: tf.Tensor) -> Dict[str, tf.Tensor]:
         """
