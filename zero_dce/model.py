@@ -4,7 +4,7 @@ from tensorflow.keras import layers
 from typing import Dict
 
 # === Utils === #
-def load_model(weight_path: str) -> tf.keras.Model:
+def load_model_from_weights(weight_path: str) -> tf.keras.Model:
     """
     Loads the ZeroDCE model and applies pretrained weights.
 
@@ -14,7 +14,7 @@ def load_model(weight_path: str) -> tf.keras.Model:
     Returns:
         tf.keras.Model: The loaded and compiled ZeroDCE model.
     """
-    model = build_dce_net()
+    model = ZeroDCE()
     model.load_weights(weight_path)
     return model
 
