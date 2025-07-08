@@ -31,18 +31,33 @@ def is_low_light(image_path: str, threshold: float = 70.0, logger: logging.Logge
         "luminance": mean_luminance
     }
 
-def detect_images(input_path: Union[str, List[str]], threshold: float = 70.0, logger: logging.Logger = None) -> List[Dict]:
+def detect_images(input_path: Union[str, List[str]], output_dir: str, threshold: float = 70.0, logger: logging.Logger = None) -> List[Dict]:
+    # Initialize results list
     results = []
 
+    # Clean up output directory
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    else:
+        # Clear existing files in the output directory
+        for file in os.listdir(output_dir):
+            file_path = os.path.join(output_dir, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+    # When input_path is a single file path or directory
     if isinstance(input_path, str):
         if os.path.isfile(input_path):
             results.append(is_low_light(input_path, threshold, logger))
         elif os.path.isdir(input_path):
-            for root, _, files in os.walk(input_path):
+            for root, dirs, files in os.walk(input_path):
+                dirs[:] = [d for d in dirs if d.lower() != output_dir.lower()]  # Exclude output directory
                 for file in files:
                     if file.lower().endswith(('.jpg', '.jpeg', '.png')):
                         full_path = os.path.join(root, file)
                         results.append(is_low_light(full_path, threshold, logger))
+
+    # When input_path is a list of file paths
     elif isinstance(input_path, list):
         for path in input_path:
             if os.path.isfile(path):

@@ -76,7 +76,7 @@ def main():
         logger.info(f"🔦 Threshold: {args.threshold}")
 
         # Step 1: Run Detection
-        results = detect_images(input_path, args.threshold, logger)
+        results = detect_images(input_path, output_dir, args.threshold, logger)
 
         # Step 2: Run Enhancement based on detection results
         enhanced = 0
