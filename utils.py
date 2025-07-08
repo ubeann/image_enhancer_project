@@ -1,13 +1,29 @@
 import logging
 import os
+import re
 from datetime import datetime
+
+def extract_number(filename):
+    """
+        Extract the first number from a filename.
+
+        Args:
+            filename (str): The filename from which to extract the number.
+
+        Returns:
+            int: The extracted number, or float('inf') if no number is found.
+    """
+    match = re.search(r'(\d+)+', filename)
+    return int(match.group()) if match else float('inf')
 
 def setup_logger(name: str = "image_enhancer", log_dir: str = "logs") -> logging.Logger:
     """
         Set up a logger for the image enhancer application.
+
         Args:
             name (str): Name of the logger.
             log_dir (str): Directory where log files will be stored.
+
         Returns:
             logging.Logger: Configured logger instance.
     """

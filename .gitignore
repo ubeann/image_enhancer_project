@@ -251,4 +251,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+## Working directories
+zero_dce/dataset/
+images/enhanced/
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,python,windows
