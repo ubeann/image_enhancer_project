@@ -25,10 +25,11 @@ def resolve_output_dir(input_path, output_dir=None):
     If no output directory is provided, it creates a new directory based on the input path.
     """
     if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
         return output_dir
     else:
-        base = os.path.basename(input_path.rstrip('/\\'))
-        return os.path.join(os.path.dirname(input_path), f"{base}_enhanced")
+        os.makedirs(os.path.join(os.path.dirname(input_path), "enhanced"), exist_ok=True)
+        return os.path.join(os.path.dirname(input_path), f"enhanced")
 
 def main():
     # Setup logger

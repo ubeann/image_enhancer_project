@@ -14,8 +14,7 @@ def load_model(weight_path: str) -> tf.keras.Model:
     Returns:
         tf.keras.Model: The loaded and compiled ZeroDCE model.
     """
-    model = ZeroDCE()
-    model.compile(learning_rate=0.0001)
+    model = build_dce_net()
     model.load_weights(weight_path)
     return model
 
