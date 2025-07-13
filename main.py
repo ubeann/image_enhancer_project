@@ -1,8 +1,12 @@
+# Import necessary libraries
 import argparse
 import os
 import shutil
+
+# Import custom modules
 from utils import setup_logger
 from detector.luminance import detect_images
+from deblur_gan.inference import deblur_image
 from zero_dce.inference import enhance_image
 
 def resolve_input_source(args):
@@ -101,13 +105,11 @@ def main():
                 except Exception as ee:
                     logger.warning(f"⚠️ Failed to enhance {filename}: {ee}")
             else:
-                # Just copy the file for now
                 try:
-                    shutil.copy(input_file, output_file)
-                    skipped += 1
-                    logger.info(f"➡️ Skipped (Normal): {filename}")
+                    _, mse, psnr = deblur_image(input_file, save_path=output_file)
+                    logger.info(f"✨ Deblurred: {filename} (Normal Light) | MSE: {mse:6.2f}, PSNR: {psnr:5.2f} dB")
                 except Exception as ee:
-                    logger.warning(f"⚠️ Failed to copy {filename}: {ee}")
+                    logger.warning(f"⚠️ Failed to deblur {filename}: {ee}")
 
         # Count results
         lowlight = sum(1 for r in results if r["status"] == "Low Light")
