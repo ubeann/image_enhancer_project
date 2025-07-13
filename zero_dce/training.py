@@ -39,7 +39,7 @@ def main():
 
     # Train the model
     logger.info("🚀 Starting training...")
-    model.fit(train_dataset, validation_data=val_dataset, epochs=3)
+    model.fit(train_dataset, validation_data=val_dataset, epochs=100)
     logger.info("✅ Training complete.")
 
     # Save the model weights
