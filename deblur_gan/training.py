@@ -13,7 +13,7 @@ from utils import download_dataset, setup_logger
 DATASET_NAME = "rahulbhalley/gopro-deblur"
 DATA_DIR = "deblur_gan"
 DEBLUR_DATASET_DIR = os.path.join(DATA_DIR, "dataset")
-WEIGHTS_PATH = "models/deblurgan.weights.h5"
+WEIGHTS_PATH = "models/deblurgan.keras"
 
 # Hyperparameters
 BATCH_SIZE = 8

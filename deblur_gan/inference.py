@@ -7,7 +7,7 @@ from tensorflow.keras.utils import img_to_array
 from .model import load_deblurgan_model
 
 # Load once (module level)
-deblurgan_model = load_deblurgan_model("models/deblurgan.weights.h5")
+deblurgan_model = load_deblurgan_model("models/deblurgan.keras")
 
 def deblur_image(image_path: str, save_path: str = None) -> Image.Image:
     """
