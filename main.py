@@ -101,13 +101,13 @@ def main():
                 try:
                     _, mse, psnr = enhance_image(input_file, save_path=output_file)
                     enhanced += 1
-                    logger.info(f"💡 Enhanced: {filename} (Low Light) | MSE: {mse:6.2f}, PSNR: {psnr:5.2f} dB")
+                    logger.info(f"💡 Enhanced : {filename}  (Low Light)   | MSE: {mse:7.2f}, PSNR: {psnr:5.2f} dB")
                 except Exception as ee:
                     logger.warning(f"⚠️ Failed to enhance {filename}: {ee}")
             else:
                 try:
                     _, mse, psnr = deblur_image(input_file, save_path=output_file)
-                    logger.info(f"✨ Deblurred: {filename} (Normal Light) | MSE: {mse:6.2f}, PSNR: {psnr:5.2f} dB")
+                    logger.info(f"✨ Deblurred: {filename} (Normal Light) | MSE: {mse:7.2f}, PSNR: {psnr:5.2f} dB")
                 except Exception as ee:
                     logger.warning(f"⚠️ Failed to deblur {filename}: {ee}")
 
