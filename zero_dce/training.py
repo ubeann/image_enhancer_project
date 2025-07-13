@@ -12,6 +12,7 @@ from utils import download_dataset, setup_logger
 DATASET_NAME = "soumikrakshit/lol-dataset"
 DATA_DIR = "zero_dce"
 LOL_DATASET_DIR = os.path.join(DATA_DIR, "dataset")
+WEIGHTS_PATH = "models/zero_dce.weights.h5"
 
 def main():
     # Setup logger
@@ -44,8 +45,8 @@ def main():
     # Save the model weights
     logger.info("💾 Saving model weights...")
     os.makedirs("models", exist_ok=True)
-    model.dce_model.save_weights("models/zero_dce.weights.h5")
-    logger.info("✅ Model weights saved to models/zero_dce.weights.h5")
+    model.dce_model.save_weights(WEIGHTS_PATH)
+    logger.info(f"✅ Model weights saved to {WEIGHTS_PATH}")
 
 if __name__ == "__main__":
     main()
