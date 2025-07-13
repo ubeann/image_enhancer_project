@@ -1,7 +1,9 @@
+import io
 import logging
 import os
-import subprocess
 import re
+import subprocess
+import sys
 import zipfile
 from datetime import datetime
 
@@ -47,10 +49,13 @@ def setup_logger(name: str = "image_enhancer", log_dir: str = "logs") -> logging
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    # File handler for logging to a file
-    file_handler = logging.FileHandler(log_file)
+    # File handler with UTF-8 encoding
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.DEBUG)
+
+    # ✅ Override stdout to support UTF-8 in console
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
     # Stream handler for logging to console
     stream_handler = logging.StreamHandler()
