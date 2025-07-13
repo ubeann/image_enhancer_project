@@ -6,7 +6,7 @@ import shutil
 # Import custom modules
 from utils import setup_logger
 from detector.luminance import detect_images
-from deblur_gan.inference import deblur_image
+from deblur_gan.torch.inference import deblur_image
 from zero_dce.inference import enhance_image
 
 def resolve_input_source(args):
