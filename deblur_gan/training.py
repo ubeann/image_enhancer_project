@@ -17,7 +17,7 @@ WEIGHTS_PATH = "models/deblurgan.weights.h5"
 
 # Hyperparameters
 BATCH_SIZE = 8
-EPOCHS = 50
+EPOCHS = 100
 LEARNING_RATE = 1e-4
 
 def main():
@@ -31,7 +31,7 @@ def main():
         logger.info("✅ Dataset found locally.")
 
     # Load the dataset
-    train_dataset, val_dataset = get_dataset(DEBLUR_DATASET_DIR)
+    train_dataset, val_dataset = get_dataset(base_path=DEBLUR_DATASET_DIR, batch_size=BATCH_SIZE)
 
     # Log dataset information
     logger.info("📊 Training dataset size: %d", len(train_dataset))
@@ -43,16 +43,16 @@ def main():
     model.compile(optimizer=tf.keras.optimizers.Adam(LEARNING_RATE), loss=combined_loss)
     logger.info("✅ Model initialized and compiled.")
 
-    # # Train the model
-    # logger.info("🚀 Starting training...")
-    # model.fit(train_dataset, validation_data=val_dataset, epochs=3)
-    # logger.info("✅ Training complete.")
+    # Train the model
+    logger.info("🚀 Starting training...")
+    model.fit(train_dataset, validation_data=val_dataset, epochs=EPOCHS)
+    logger.info("✅ Training complete.")
 
-    # # Save the model weights
-    # logger.info("💾 Saving model weights...")
-    # os.makedirs("models", exist_ok=True)
-    # model.dce_model.save_weights("models/zero_dce.weights.h5")
-    # logger.info("✅ Model weights saved to models/zero_dce.weights.h5")
+    # Save the model weights
+    logger.info("💾 Saving model weights...")
+    os.makedirs("models", exist_ok=True)
+    model.save(WEIGHTS_PATH)
+    logger.info(f"✅ Model weights saved to {WEIGHTS_PATH}")
 
 if __name__ == "__main__":
     main()
