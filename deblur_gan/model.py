@@ -1,5 +1,4 @@
-# deblur_gan/model.py
-
+import os
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.layers import Layer
@@ -105,16 +104,25 @@ def build_unet(input_shape: Tuple[int, int, int] = (256, 256, 3)) -> Model:
     model = models.Model(inputs, outputs)
     return model
 
-def load_deblurgan_model(model_path: str) -> tf.keras.Model:
+def load_deblurgan_model(path: str) -> tf.keras.Model:
     """
-    Load the DeblurGAN model from the specified path.
+    Loads a DeblurGAN model from the specified path.
+
     Args:
-        model_path: Path to the saved model file.
+        path (str): Path to the saved model file (e.g., an HDF5 or SavedModel directory).
+
     Returns:
-        Loaded Keras model.
+        tf.keras.Model: The loaded Keras model.
+
+    Raises:
+        FileNotFoundError: If the model file does not exist at the specified path.
     """
-    return load_model(
-        model_path,
-        custom_objects={"combined_loss": combined_loss},
-        compile=False
-    )
+
+    # Check if the given path exists; raise an error if it doesn't
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"❌ Model weights not found: {path}")
+
+    # Load the Keras model from the specified path
+    # 'custom_objects' is used to provide the custom loss function 'combined_loss'
+    # 'compile=False' prevents the model from being compiled at load time
+    return load_model(path, custom_objects={"combined_loss": combined_loss}, compile=False)
