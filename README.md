@@ -100,9 +100,9 @@ image-enhancer/
 
 ## 🧩 To-Do
 - [x] Add low-light detection
-- [ ] Integrate Zero-DCE for enhancement
-- [ ] Integrate DeblurGAN (blurred image enhancement)
-- [ ] Auto-evaluation and quality metrics
+- [x] Integrate Zero-DCE for enhancement
+- [x] Integrate DeblurGAN (blurred image enhancement)
+- [x] Auto-evaluation and quality metrics
 
 ## 📜 License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

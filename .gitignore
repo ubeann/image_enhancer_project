@@ -253,6 +253,8 @@ $RECYCLE.BIN/
 
 ## Working directories
 zero_dce/dataset/
+deblur_gan/dataset/
 images/enhanced/
+*.keras
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,python,windows
