@@ -1,38 +1,14 @@
+# Import necessary libraries
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+
+# Import custom modules
 from .model import load_model_from_weights
+from .evaluation import calculate_mse, calculate_psnr
 
 # Load the pretrained Zero-DCE model once at module load time
 zero_dce_model = load_model_from_weights("models/zero_dce.weights.h5")
-
-# Utility functions to calculate PSNR and MSE
-def calculate_psnr(original_image, processed_image):
-    """
-    Calculate the Peak Signal-to-Noise Ratio (PSNR) between two images.
-    Args:
-        original_image: The original image as a numpy array.
-        processed_image: The processed image as a numpy array.
-    Returns:
-        PSNR value as a float.
-    """
-    mse = np.mean((original_image - processed_image) ** 2)
-    if mse == 0:
-        return float('inf')
-    max_pixel_value = 255.0  # Use 255 for standard 8-bit images
-    psnr = 20 * np.log10(max_pixel_value / np.sqrt(mse))
-    return psnr
-
-def calculate_mse(original_image, processed_image):
-    """
-    Calculate the Mean Squared Error (MSE) between two images.
-    Args:
-        original_image: The original image as a numpy array.
-        processed_image: The processed image as a numpy array.
-    Returns:
-        MSE value as a float.
-    """
-    return np.mean((original_image - processed_image) ** 2)
 
 # Main function to enhance an image from a file
 def enhance_image(image_path: str, save_path: str = None) -> tuple:
