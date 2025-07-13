@@ -25,13 +25,7 @@ def load_deblurganv2_model(weights_path: str, norm_type: str = 'instance') -> nn
         raise FileNotFoundError(f"❌ Model weights not found: {weights_path}")
 
     # Initialize the generator model (e.g., DeblurGANv2 with MobileNetV2 encoder)
-    model = get_generator(norm_type=norm_type)
-
-    # # Load the pretrained model weights from disk
-    # state_dict = torch.load(weights_path, map_location="cpu")
-
-    # # Apply the weights to the model
-    # model.load_state_dict(state_dict)
+    model = get_generator(weights_path=weights_path, norm_type=norm_type)
 
     # Set the model to evaluation mode (important for inference)
     model.eval()

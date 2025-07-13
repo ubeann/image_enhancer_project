@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from typing import Tuple
 
 # Import custom modules
-from model import MobileNetV2
+from .model import MobileNetV2
 
 class FPNHead(nn.Module):
     """
@@ -77,7 +77,8 @@ class FPNMobileNet(nn.Module):
         output_ch: int = 3,
         num_filters: int = 64,
         num_filters_fpn: int = 128,
-        pretrained: bool = True
+        pretrained: bool = True,
+        weights_path: str = "models/deblurganv2_mobilenet.pth"
     ):
         """
         Initializes the FPNMobileNet model.
@@ -88,6 +89,7 @@ class FPNMobileNet(nn.Module):
             num_filters (int): Number of channels in each FPN head and intermediate layers.
             num_filters_fpn (int): Number of channels in the FPN backbone feature maps.
             pretrained (bool): If True, loads pretrained MobileNetV2 weights into the FPN backbone.
+            weights_path (str): Path to the pretrained MobileNetV2 weights file.
         """
         super().__init__()
 
@@ -95,7 +97,8 @@ class FPNMobileNet(nn.Module):
         self.fpn = FPN(
             num_filters=num_filters_fpn,
             norm_layer=norm_layer,
-            pretrained=pretrained
+            pretrained=pretrained,
+            weights_path=weights_path
         )
 
         # FPN heads for each feature scale (from coarse to fine resolution)
@@ -142,21 +145,21 @@ class FPNMobileNet(nn.Module):
         map0, map1, map2, map3, map4 = self.fpn(x)
 
         # Process each feature map with a head and upsample to input resolution
-        map4 = F.upsample(self.head4(map4), scale_factor=8, mode="nearest")  # coarsest
-        map3 = F.upsample(self.head3(map3), scale_factor=4, mode="nearest")
-        map2 = F.upsample(self.head2(map2), scale_factor=2, mode="nearest")
-        map1 = F.upsample(self.head1(map1), scale_factor=1, mode="nearest")  # finest (no upsample)
+        map4 = F.interpolate(self.head4(map4), scale_factor=8, mode="nearest")  # coarsest
+        map3 = F.interpolate(self.head3(map3), scale_factor=4, mode="nearest")
+        map2 = F.interpolate(self.head2(map2), scale_factor=2, mode="nearest")
+        map1 = F.interpolate(self.head1(map1), scale_factor=1, mode="nearest")  # finest (no upsample)
 
         # Concatenate all processed maps and apply smoothing convolution
         combined = torch.cat([map4, map3, map2, map1], dim=1)
         smoothed = self.smooth(combined)
 
         # Upsample to match map0's resolution and fuse with map0
-        smoothed = F.upsample(smoothed, scale_factor=2, mode="nearest")
+        smoothed = F.interpolate(smoothed, scale_factor=2, mode="nearest")
         smoothed = self.smooth2(smoothed + map0)  # residual fusion with early feature map
 
         # Upsample to original image resolution
-        smoothed = F.upsample(smoothed, scale_factor=2, mode="nearest")
+        smoothed = F.interpolate(smoothed, scale_factor=2, mode="nearest")
 
         # Final reconstruction layer followed by tanh activation and residual connection
         final = self.final(smoothed)
@@ -172,7 +175,7 @@ class FPN(nn.Module):
     rich feature maps at different scales for tasks like segmentation or reconstruction.
     """
 
-    def __init__(self, norm_layer: nn.Module, num_filters: int = 128, pretrained: bool = True):
+    def __init__(self, norm_layer: nn.Module, num_filters: int = 128, pretrained: bool = True, weights_path: str = "models/deblurganv2_mobilenet.pth"):
         """
         Initializes the FPN module.
 
@@ -180,6 +183,7 @@ class FPN(nn.Module):
             norm_layer (nn.Module): A callable that returns a normalization layer (e.g., BatchNorm2d).
             num_filters (int): Number of output channels for the FPN layers.
             pretrained (bool): If True, loads pretrained weights for the MobileNetV2 backbone.
+            weights_path (str): Path to the pretrained MobileNetV2 weights file.
         """
         super().__init__()
 
@@ -188,8 +192,23 @@ class FPN(nn.Module):
 
         if pretrained:
             # Load pretrained weights from file (ensure file exists or handle exception)
-            state_dict = torch.load('mobilenetv2.pth.tar')  # Use map_location='cpu' if needed
-            net.load_state_dict(state_dict)
+            state_dict = torch.load(weights_path, map_location='cpu')
+
+            # If the state_dict contains a 'model' key, extract it (common in PyTorch checkpoints)
+            if 'model' in state_dict:
+                state_dict = state_dict['model']
+
+            # Strip 'module.fpn.' prefix from keys
+            clean_state_dict = {}
+            for k, v in state_dict.items():
+                if not k.startswith("module.fpn."):
+                    continue
+                else:
+                    new_k = k[len("module.fpn."):]
+                    clean_state_dict[new_k] = v
+
+            # Load the state_dict into the MobileNetV2 model
+            net.load_state_dict(state_dict, strict=False)
 
         # Full MobileNetV2 feature layers
         self.features = net.features
@@ -267,9 +286,9 @@ class FPN(nn.Module):
 
         # Top-down path: progressively combine and refine features
         map4 = lateral4  # Start from deepest feature
-        map3 = self.td1(lateral3 + F.upsample(map4, scale_factor=2, mode="nearest"))  # merge with upsampled deeper map
-        map2 = self.td2(lateral2 + F.upsample(map3, scale_factor=2, mode="nearest"))
-        map1 = self.td3(lateral1 + F.upsample(map2, scale_factor=2, mode="nearest"))
+        map3 = self.td1(lateral3 + F.interpolate(map4, scale_factor=2, mode="nearest"))  # merge with upsampled deeper map
+        map2 = self.td2(lateral2 + F.interpolate(map3, scale_factor=2, mode="nearest"))
+        map1 = self.td3(lateral1 + F.interpolate(map2, scale_factor=2, mode="nearest"))
 
         # Return the full pyramid of features
         return lateral0, map1, map2, map3, map4

@@ -39,18 +39,19 @@ def get_norm_layer(norm_type: str) -> Callable[..., nn.Module]:
     # Return the normalization layer constructor
     return norm_layer
 
-def get_generator(norm_type: str) -> nn.DataParallel:
+def get_generator(weights_path: str, norm_type: str) -> nn.DataParallel:
     """
     Constructs and returns a generator model wrapped in DataParallel for multi-GPU training.
 
     Args:
+        weights_path (str): Path to the pretrained model weights.
         norm_type (str): Type of normalization to use in the generator. Common options: 'batch', 'instance', etc.
 
     Returns:
         nn.DataParallel: A generator model (`FPNMobileNet`) wrapped with `nn.DataParallel`.
     """
     # Create the generator model with the specified normalization layer
-    model_g = FPNMobileNet(norm_layer=get_norm_layer(norm_type=norm_type))
+    model_g = FPNMobileNet(norm_layer=get_norm_layer(norm_type=norm_type), weights_path=weights_path)
 
     # Wrap the model with DataParallel for multi-GPU support
     return nn.DataParallel(model_g)
