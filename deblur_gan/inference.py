@@ -26,8 +26,17 @@ def deblur_image(image_path: str, save_path: str = None) -> tuple:
         float: Peak Signal-to-Noise Ratio between original and deblurred images.
     """
 
-    # Load original image and preserve its unprocessed version
-    original = Image.open(image_path).convert("RGB")
+    # Load the original image
+    original = Image.open(image_path)
+
+    # Handle palette with transparency
+    if original.mode == "P" and "transparency" in original.info:
+        original = original.convert("RGBA")
+
+    # Always convert to RGB before model
+    original = original.convert("RGB")
+
+    # Store original size and convert to uint8
     original_size = original.size
     original_uint8 = np.array(original)
 
@@ -37,7 +46,7 @@ def deblur_image(image_path: str, save_path: str = None) -> tuple:
     arr = np.expand_dims(arr, axis=0)
 
     # Predict
-    pred = deblurgan_model.predict(arr)[0]
+    pred = deblurgan_model.predict(arr, verbose=0)[0]
     pred = np.clip(pred, 0, 1) * 255.0
     result = Image.fromarray(pred.astype("uint8"))
 
