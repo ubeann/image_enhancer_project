@@ -4,7 +4,8 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Import necessary modules
-# from model import ZeroDCE
+import tensorflow as tf
+from model import build_unet, combined_loss
 from dataloader import get_dataset
 from utils import download_dataset, setup_logger
 
@@ -32,19 +33,15 @@ def main():
     # Load the dataset
     train_dataset, val_dataset = get_dataset(DEBLUR_DATASET_DIR)
 
-    #! Check dataset sizes
+    # Log dataset information
     logger.info("📊 Training dataset size: %d", len(train_dataset))
     logger.info("📊 Validation dataset size: %d", len(val_dataset))
 
-    # # Log dataset information
-    # logger.info("📊 Training dataset size: %d", len(train_dataset))
-    # logger.info("📊 Validation dataset size: %d", len(val_dataset))
-
-    # # Initialize and compile the Zero-DCE model
-    # logger.info("🔧 Initializing Zero-DCE model...")
-    # model = ZeroDCE()
-    # model.compile(learning_rate=1e-4)
-    # logger.info("✅ Model initialized and compiled.")
+    # # Initialize and compile the Deblur GAN model
+    logger.info("🔧 Initializing Zero-DCE model...")
+    model = build_unet()
+    model.compile(optimizer=tf.keras.optimizers.Adam(LEARNING_RATE), loss=combined_loss)
+    logger.info("✅ Model initialized and compiled.")
 
     # # Train the model
     # logger.info("🚀 Starting training...")
