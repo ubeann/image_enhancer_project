@@ -4,7 +4,7 @@ import torch.nn as nn
 from typing import Callable
 
 # Import custom modules
-from fpn import FPNMobileNet
+from .fpn import FPNMobileNet
 
 def get_norm_layer(norm_type: str) -> Callable[..., nn.Module]:
     """
@@ -39,7 +39,7 @@ def get_norm_layer(norm_type: str) -> Callable[..., nn.Module]:
     # Return the normalization layer constructor
     return norm_layer
 
-def get_generator(norm_type: str = 'instance'):
+def get_generator(norm_type: str) -> nn.DataParallel:
     """
     Constructs and returns a generator model wrapped in DataParallel for multi-GPU training.
 
